@@ -2,6 +2,7 @@ import re
 import requests
 import socket
 import ssl
+import tldextract
 
 # Google Safe Browsing API Key (replace with your actual key)
 API_KEY = "your_google_safe_browsing_api_key"
