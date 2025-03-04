@@ -1,6 +1,5 @@
 import streamlit as st
 from url_safety_check import check_url_safety
-import tldextract
 
 st.title("URL Safety Checker")
 st.write("This app checks the safety of a given URL using various criteria including SSL, domain reputation, and Google Safe Browsing API.")
