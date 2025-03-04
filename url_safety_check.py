@@ -7,12 +7,14 @@ import tldextract
 # Google Safe Browsing API Key (replace with your actual key)
 API_KEY = "your_google_safe_browsing_api_key"
 
-# Trusted domains and TLDs
-TRUSTED_DOMAINS = ["google.com", "paypal.com"]
-TRUSTED_TLDS = [".gov", ".mil", ".edu"]
+# Trusted domains
+TRUSTED_DOMAINS = ["google.com", "paypal.com", "github.com", "microsoft.com", "apple.com", "python.org", "wikipedia.org", "w3.org"]
 
 # Malicious domains for testing purposes
 MALICIOUS_DOMAINS = ["malware.com", "phishing.net", "evil.com"]
+
+# Suspicious TLDs based on research (e.g., .tk, .pw, .ml)
+SUSPICIOUS_TLDS = [".tk", ".pw", ".ml", ".cf", ".ga"]
 
 def add_scheme_if_missing(url):
     """Add 'https://' to the URL if no scheme is present."""
@@ -66,12 +68,12 @@ def check_malicious_domain(url):
     return True, ""
 
 def check_tld(url):
-    """Check if the TLD is in the list of trusted TLDs."""
+    """Check if the TLD is suspicious."""
     extracted = tldextract.extract(url)
     tld = f".{extracted.suffix}"
-    if tld in TRUSTED_TLDS:
-        return True, ""
-    return False, f"URL uses an untrusted TLD: {tld}."
+    if tld in SUSPICIOUS_TLDS:
+        return False, f"URL uses a suspicious TLD: {tld}."
+    return True, ""
 
 def check_google_safe_browsing(url):
     """Use Google Safe Browsing API to check for malicious URLs."""
