@@ -1,9 +1,8 @@
-import validators
+import re
 import requests
 import socket
 import ssl
 import tldextract
-import re
 
 # Google Safe Browsing API Key (replace with your actual key)
 API_KEY = "your_google_safe_browsing_api_key"
@@ -15,11 +14,12 @@ TRUSTED_TLDS = [".gov", ".mil", ".edu"]
 # Malicious domains for testing purposes
 MALICIOUS_DOMAINS = ["malware.com", "phishing.net", "evil.com"]
 
-# def validate_url(url):
-#     """Validate if the URL is well-formed."""
-#     if validators.url(url):
-#         return True
-#     return False
+def add_scheme_if_missing(url):
+    """Add 'https://' to the URL if no scheme is present."""
+    if not url.startswith(("http://", "https://")):
+        return "https://" + url
+    return url
+
 def validate_url_custom(url):
     """Custom function to validate if the URL is well-formed."""
     # Regex pattern for validating URLs
@@ -29,7 +29,6 @@ def validate_url_custom(url):
         r'(\/[a-zA-Z0-9-._~:/?#[\]@!$&\'()*+,;%=]*)?$'  # Optional path/query
     )
     return re.match(pattern, url) is not None
-# //
 
 def check_http(url):
     """Check if the URL uses HTTP instead of HTTPS."""
@@ -100,8 +99,11 @@ def check_google_safe_browsing(url):
 def check_url_safety(url):
     """Combine all safety checks into one function."""
     
+    # Add scheme if missing
+    url = add_scheme_if_missing(url)
+
     # Validate URL format
-    if not validate_url(url):
+    if not validate_url_custom(url):
         return False, "Invalid URL format."
 
     # Check for HTTP usage
